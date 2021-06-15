@@ -1,62 +1,32 @@
 const express = require('express')
 const chalk = require('chalk')
 const app = express()
-const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
 app.use(express.json())
 
-const users = []
 
-// const posts = [
-//   {
-//     username: 'Kristen', 
-//     title: 'Post 1'
-//   },
-//    {
-//     username: 'Jim', 
-//     title: 'Post 2'
-//   }
-// ]
+const posts = [
+  {
+    username: 'Kristen', 
+    title: 'Post 1'
+  },
+   {
+    username: 'Jim', 
+    title: 'Post 2'
+  }
+]
 
-app.get('/users', (req, res) => {
-  res.json(users)
+app.get('/posts', (req, res) => {
+  res.json(posts)
 })
 
 
+app.post('/login', (req, res) => {
+  const user = { name: username}
+  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 
-app.post('/users', async (req, res) => {
-  try {
-    const salt = await bcrypt.genSalt()
-    const hashedPassword = await bcrypt.hash(req.body.password, salt)
-    console.log(salt, hashedPassword);
-
-    const user = {name: req.body.name, password: hashedPassword} 
-    
-    users.push(user)
-    res.status(201).send(users)
-  }
-  catch(e) {
-    res.status(500).send()
-  }
-})
-
-
-
-app.post('/users/login', async (req, res) => {
-  const user = users.find(user => user.name === req.body.name)
-  if(!user) {
-    return res.status(400).send('cannot find user')
-  }
-
-  try {
-    if(await bcrypt.compare(req.body.password, user.password)) {
-      res.send('success!')
-    } else {
-      res.send('not allowed')
-    }
-  }
-  catch(e) {
-    res.status(500).send()
-  }
+  const username = req.body.username
 })
 
 
