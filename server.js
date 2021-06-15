@@ -17,9 +17,9 @@ const users = []
 //   }
 // ]
 
-// app.get('/posts', (req, res) => {
-//   res.json(posts)
-// })
+app.get('/users', (req, res) => {
+  res.json(users)
+})
 
 
 
@@ -41,9 +41,25 @@ app.post('/users', async (req, res) => {
 
 
 
-app.get('/login', (req, res) => {
-  //Authenticate
+app.post('/users/login', async (req, res) => {
+  const user = users.find(user => user.name === req.body.name)
+  if(!user) {
+    return res.status(400).send('cannot find user')
+  }
+
+  try {
+    if(await bcrypt.compare(req.body.password, user.password)) {
+      res.send('success!')
+    } else {
+      res.send('not allowed')
+    }
+  }
+  catch(e) {
+    res.status(500).send()
+  }
 })
+
+
 
 app.listen(3000, () => {
   console.log(chalk.black.bgCyan('app listening on port 3000'))
