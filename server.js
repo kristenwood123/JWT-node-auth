@@ -20,7 +20,7 @@ const posts = [
 ]
 
 app.get('/posts', auth, (req, res) => {
-  res.json(posts)
+  res.json(posts.filter(post => post.username === req.user.name))
 })
 
 
@@ -28,6 +28,7 @@ app.post('/login', (req, res) => {
   //Authenticate user
   const username = req.body.username
   const user = { name: username}
+  console.log(user);
 
   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
   res.json({ accessToken })
